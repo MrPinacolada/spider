@@ -1,15 +1,27 @@
 <template>
-  <canvas id="recluse-spider"></canvas>
+  <canvas id="amazing_spider"></canvas>
 </template>
-
 <script setup lang="ts">
-window.onload = function initAnimation() {
-  let canvas = document.getElementById("recluse-spider") as HTMLCanvasElement,
-    c = canvas?.getContext("2d"),
+import { onBeforeUnmount, onMounted } from "vue";
+
+let mouse = { x: false, y: false },
+  last_mouse = {},
+  maxl = 300,
+  minl = 50,
+  n = 20,
+  numt = 300,
+  tent = [],
+  clicked = false,
+  target = { x: 0, y: 0 },
+  last_target = { x: 0, y: 0 },
+  t = 0,
+  q = 10;
+
+const initAnimation = () => {
+  let canvas = document.getElementById("amazing_spider") as HTMLCanvasElement,
+    field = canvas?.getContext("2d"),
     w = (canvas.width = window.innerWidth),
-    h = (canvas.height = window.innerHeight),
-    mouse = { x: false, y: false },
-    last_mouse = {};
+    h = (canvas.height = window.innerHeight);
 
   const dist = (p1x: number, p1y: number, p2x: number, p2y: number) => {
     return Math.sqrt(Math.pow(p2x - p1x, 2) + Math.pow(p2y - p1y, 2));
@@ -60,26 +72,196 @@ window.onload = function initAnimation() {
       this.nextPos.y = this.pos.y + this.l * Math.sin(this.ang);
     }
     show() {
-      c?.lineTo(this.nextPos.x, this.nextPos.y);
+      field?.lineTo(this.nextPos.x, this.nextPos.y);
     }
   }
 
-  const handleMouseMove = (e: MouseEvent) => {};
+  class reculse {
+    x: any;
+    y: any;
+    l: any;
+    n: any;
+    t: {};
+    rand: number;
+    segments: segment[];
+    angle: number | undefined;
+    dt: number | undefined;
+    constructor(x: any, y: any, l: any, n: any, a: any) {
+      this.x = x;
+      this.y = y;
+      this.l = l;
+      this.n = n;
+      this.t = {};
+      this.rand = Math.random();
+      this.segments = [new segment(this, this.l / this.n, 0, true)];
+      for (let i = 1; i < this.n; i++) {
+        this.segments.push(
+          new segment(this.segments[i - 1], this.l / this.n, 0, false)
+        );
+      }
+    }
+    move(last_target: { x: number; y: number }, target: { y: any; x: any }) {
+      this.angle = Math.atan2(target.y - this.y, target.x - this.x);
+      this.dt = dist(last_target.x, last_target.y, target.x, target.y) + 5;
+      this.t = {
+        x: target.x - 0.8 * this.dt * Math.cos(this.angle),
+        y: target.y - 0.8 * this.dt * Math.sin(this.angle),
+      };
+      if (this.t.x) {
+        this.segments[this.n - 1].update(this.t);
+      } else {
+        this.segments[this.n - 1].update(target);
+      }
+      for (let i = this.n - 2; i >= 0; i--) {
+        this.segments[i].update(this.segments[i + 1].pos);
+      }
+      if (
+        dist(this.x, this.y, target.x, target.y) <=
+        this.l + dist(last_target.x, last_target.y, target.x, target.y)
+      ) {
+        this.segments[0].fallback({ x: this.x, y: this.y });
+        for (let i = 1; i < this.n; i++) {
+          this.segments[i].fallback(this.segments[i - 1].nextPos);
+        }
+      }
+    }
+    show(target: { x: number; y: number }) {
+      if (dist(this.x, this.y, target.x, target.y) <= this.l && field) {
+        field.globalCompositeOperation = "lighter";
+        field.beginPath();
+        field.lineTo(this.x, this.y);
+        for (let i = 0; i < this.n; i++) {
+          this.segments[i].show();
+        }
+        field.strokeStyle = "#996A51";
+        field.lineWidth = this.rand * 4;
+        field.lineCap = "round";
+        field.lineJoin = "round";
+        field.stroke();
+        field.globalCompositeOperation = "source-over";
+      }
+    }
+    show2(target: { x: number; y: number }) {
+      if (field) {
+        field.beginPath();
+        if (dist(this.x, this.y, target.x, target.y) <= this.l) {
+          field.arc(this.x, this.y, 2 * this.rand + 2, 0, 2 * Math.PI);
+          field.fillStyle = "#996A51";
+        } else {
+          field.arc(this.x, this.y, this.rand * 2, 0, 2 * Math.PI);
+          field.fillStyle = "#ffffff";
+        }
+        field.fill();
+      }
+    }
+  }
+  for (let i = 0; i < numt; i++) {
+    tent.push(
+      new reculse(
+        Math.random() * w,
+        Math.random() * h,
+        Math.random() * (maxl - minl) + minl,
+        n,
+        Math.random() * 2 * Math.PI
+      )
+    );
+  }
 
-  const handleMouseLeave = (e: MouseEvent) => {};
+  const draw = () => {
+    if (!field) return;
+    if (mouse.x) {
+      target.errx = mouse.x - target.x;
+      target.erry = mouse.y - target.y;
+    } else {
+      target.errx =
+        w / 2 +
+        ((h / 2 - q) * Math.sqrt(2) * Math.cos(t)) /
+          (Math.pow(Math.sin(t), 2) + 1) -
+        target.x;
+      target.erry =
+        h / 2 +
+        ((h / 2 - q) * Math.sqrt(2) * Math.cos(t) * Math.sin(t)) /
+          (Math.pow(Math.sin(t), 2) + 1) -
+        target.y;
+    }
+
+    target.x += target.errx / 10;
+    target.y += target.erry / 10;
+
+    t += 0.01;
+
+    field.beginPath();
+    field.arc(
+      target.x,
+      target.y,
+      dist(last_target.x, last_target.y, target.x, target.y) + 5,
+      0,
+      2 * Math.PI
+    );
+    field.fillStyle = "#C7A183";
+    field.fill();
+
+    for (let i = 0; i < numt; i++) {
+      tent[i].move(last_target, target);
+      tent[i].show2(target);
+    }
+    for (let i = 0; i < numt; i++) {
+      tent[i].show(target);
+    }
+    last_target.x = target.x;
+    last_target.y = target.y;
+  };
+
+  const handleMouseMove = (e: MouseEvent) => {
+    last_mouse.x = mouse.x;
+    last_mouse.y = mouse.y;
+
+    mouse.x = e.pageX - canvas.offsetLeft;
+    mouse.y = e.pageY - canvas.offsetTop;
+  };
+
+  const handleMouseLeave = (e: MouseEvent) => {
+    mouse.x = false;
+    mouse.y = false;
+  };
 
   const handleMouseDown = (e: MouseEvent) => {};
 
   const handleMouseUp = (e: MouseEvent) => {};
 
-  const handleResize = () => {};
+  const handleResize = () => {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+    loop();
+  };
 
   canvas.addEventListener("mousemove", handleMouseMove, false);
   canvas.addEventListener("mouseleave", handleMouseLeave);
   canvas.addEventListener("mousedown", handleMouseDown, false);
   canvas.addEventListener("mouseup", handleMouseUp, false);
   window.addEventListener("resize", handleResize);
+  const loop = () => {
+    field?.clearRect(0, 0, w, h);
+    draw();
+    requestAnimationFrame(loop);
+  };
+
+  loop();
+  const listenerDestroyer = () => {
+    canvas.removeEventListener("mousemove", handleMouseMove, false);
+    canvas.removeEventListener("mouseleave", handleMouseLeave);
+    canvas.removeEventListener("mousedown", handleMouseDown, false);
+    canvas.removeEventListener("mouseup", handleMouseUp, false);
+    window.removeEventListener("resize", handleResize);
+  };
+  return listenerDestroyer
 };
+onMounted(() => {
+  initAnimation();
+});
+
+onBeforeUnmount(()=>{
+})
 </script>
 
 <style>
