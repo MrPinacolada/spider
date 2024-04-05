@@ -1,5 +1,5 @@
 <template>
-  <canvas id="amazing_spider"></canvas>
+  <canvas id="amazing__spider"></canvas>
 </template>
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted } from "vue";
@@ -31,7 +31,7 @@ let mouse = { x: false, y: false },
   q = 10;
 
 const initAnimation = () => {
-  let canvas = document.getElementById("amazing_spider") as HTMLCanvasElement;
+  let canvas = document.getElementById("amazing__spider") as HTMLCanvasElement;
   if (!canvas) return;
   let field = canvas?.getContext("2d"),
     w = (canvas.width = window.innerWidth),
@@ -155,9 +155,7 @@ const initAnimation = () => {
         );
         gradient.addColorStop(0, props.tentacle_start);
         gradient.addColorStop(1, props.tentacle_end);
-
         field.strokeStyle = gradient;
-
         field.lineWidth = this.rand * 4;
         field.lineCap = "round";
         field.lineJoin = "round";

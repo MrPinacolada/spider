@@ -1,6 +1,6 @@
 {
-  "name": "spider",
-  "version": "0.0.0",
+  "name": "amazing__spider",
+  "version": "0.0.1",
   "private": true,
   "type": "module",
   "scripts": {
@@ -11,8 +11,7 @@
     "type-check": "vue-tsc --build --force"
   },
   "dependencies": {
-    "vue": "^3.4.21",
-    "vue-router": "^4.3.0"
+    "vue": "^3.4.21"
   },
   "devDependencies": {
     "@tsconfig/node20": "^20.1.2",
