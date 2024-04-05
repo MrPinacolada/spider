@@ -4,6 +4,19 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted } from "vue";
 
+const props = defineProps({
+  tentacle_start: {
+    required: false,
+    type: String,
+    default: "#ffffff",
+  },
+  tentacle_end: {
+    required: false,
+    type: String,
+    default: "#294CBE",
+  },
+});
+
 let mouse = { x: false, y: false },
   last_mouse = {},
   maxl = 300,
@@ -18,8 +31,9 @@ let mouse = { x: false, y: false },
   q = 10;
 
 const initAnimation = () => {
-  let canvas = document.getElementById("amazing_spider") as HTMLCanvasElement,
-    field = canvas?.getContext("2d"),
+  let canvas = document.getElementById("amazing_spider") as HTMLCanvasElement;
+  if (!canvas) return;
+  let field = canvas?.getContext("2d"),
     w = (canvas.width = window.innerWidth),
     h = (canvas.height = window.innerHeight);
 
@@ -133,7 +147,17 @@ const initAnimation = () => {
         for (let i = 0; i < this.n; i++) {
           this.segments[i].show();
         }
-        field.strokeStyle = "#996A51";
+        let gradient = field.createLinearGradient(
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+        gradient.addColorStop(0, props.tentacle_start);
+        gradient.addColorStop(1, props.tentacle_end);
+
+        field.strokeStyle = gradient;
+
         field.lineWidth = this.rand * 4;
         field.lineCap = "round";
         field.lineJoin = "round";
@@ -141,6 +165,7 @@ const initAnimation = () => {
         field.globalCompositeOperation = "source-over";
       }
     }
+
     show2(target: { x: number; y: number }) {
       if (field) {
         field.beginPath();
@@ -254,14 +279,13 @@ const initAnimation = () => {
     canvas.removeEventListener("mouseup", handleMouseUp, false);
     window.removeEventListener("resize", handleResize);
   };
-  return listenerDestroyer
+  onBeforeUnmount(() => {
+    listenerDestroyer();
+  });
 };
 onMounted(() => {
   initAnimation();
 });
-
-onBeforeUnmount(()=>{
-})
 </script>
 
 <style>
