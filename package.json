@@ -1,13 +1,12 @@
 {
   "name": "amazing__spider",
   "private": false,
-  "version": "0.0.4",
+  "version": "0.0.5",
   "type": "module",
   "keywords": [
-    "checkbox",
     "amazing__spider",
-    "material",
-    "material-ui",
+    "background",
+    "animated_background",
     "vue3",
     "vue",
     "vuejs"
