@@ -1,5 +1,5 @@
 ## Demo
-<img src="src/assets/demo.gif" width="300" />
+<img src="src/assets/demo.gif" width="100%" />
 
 ## Links
 
