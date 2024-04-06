@@ -1,6 +1,8 @@
 ## Demo
+<img src="src/assets/demo.gif" width="300" />
 
-Demo link : [Click here](https://codepen.io/Vasilii-Skovorodin/pen/bGJLXWR)
+## Links
+
 GH : [Click here](https://github.com/MrPinacolada/spider)
 NPM : [Click here](https://www.npmjs.com/package/amazing__spider)
 
