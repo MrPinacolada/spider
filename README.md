@@ -1,10 +1,8 @@
 ## Demo
 <img src="src/assets/demo.gif" width="100%" />
 
-## Links
-
-GH : [Click here](https://github.com/MrPinacolada/spider)
-NPM : [Click here](https://www.npmjs.com/package/amazing__spider)
+## NPM
+[Click here](https://www.npmjs.com/package/amazing__spider)
 
 ## Installation
 
