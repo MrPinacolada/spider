@@ -1,26 +1,48 @@
 {
   "name": "amazing__spider",
-  "version": "0.0.1",
-  "private": true,
+  "private": false,
+  "version": "0.0.4",
   "type": "module",
+  "keywords": [
+    "checkbox",
+    "amazing__spider",
+    "material",
+    "material-ui",
+    "vue3",
+    "vue",
+    "vuejs"
+  ],
+  "files": ["dist", "src"],
+  "main": "./dist/amazing__spider.umd.cjs",
+  "module": "./dist/amazing__spider.js",
+  "exports": {
+    ".": {
+      "import": "./dist/amazing__spider.js",
+      "require": "./dist/amazing__spider.umd.cjs"
+    },
+    "./dist/style.css": {
+      "import": "./dist/style.css",
+      "require": "./dist/style.css"
+    }
+  },
+  "types": "./dist/index.d.ts",
   "scripts": {
     "dev": "vite",
-    "build": "run-p type-check \"build-only {@}\" --",
-    "preview": "vite preview",
-    "build-only": "vite build",
-    "type-check": "vue-tsc --build --force"
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "vue": "^3.4.21"
+    "vue": "^3.2.47"
+  },
+  "peerDependencies": {
+    "vue": "^3.0.0"
   },
   "devDependencies": {
-    "@tsconfig/node20": "^20.1.2",
-    "@types/node": "^20.11.28",
-    "@vitejs/plugin-vue": "^5.0.4",
-    "@vue/tsconfig": "^0.5.1",
-    "npm-run-all2": "^6.1.2",
-    "typescript": "~5.4.0",
-    "vite": "^5.1.6",
-    "vue-tsc": "^2.0.6"
+    "@vitejs/plugin-vue": "^4.1.0",
+    "path": "^0.12.7",
+    "typescript": "^5.0.2",
+    "vite": "^4.3.9",
+    "vite-plugin-dts": "^2.3.0",
+    "vue-tsc": "^1.4.2"
   }
 }

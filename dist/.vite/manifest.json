@@ -1,0 +1,12 @@
+{
+  "src/index.ts": {
+    "file": "amazing__spider.umd.cjs",
+    "name": "index",
+    "src": "src/index.ts",
+    "isEntry": true
+  },
+  "style.css": {
+    "file": "style.css",
+    "src": "style.css"
+  }
+}

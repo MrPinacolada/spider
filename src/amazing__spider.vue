@@ -42,15 +42,15 @@ const props = defineProps({
   },
 });
 
-let mouse = { x: false, y: false },
-  last_mouse = {},
+let mouse = { x: 0, y: 0 },
+  last_mouse = {x: 0, y: 0},
   maxl = 300,
   minl = 50,
   n = 20,
   numt = 300,
   tent = [],
   clicked = false,
-  target = { x: 0, y: 0 },
+  target = { x: 0, y: 0, errx: 0, erry: 0 },
   last_target = { x: 0, y: 0 },
   t = 0,
   q = 10;
@@ -67,16 +67,16 @@ const initAnimation = () => {
   };
 
   class segment {
-    first: any;
-    pos: { x: any; y: any };
-    l: any;
-    ang: any;
-    nextPos: { x: any; y: any };
+    first: number;
+    pos: { x: number; y: number };
+    l: number;
+    ang: number;
+    nextPos: { x: number; y: number };
     constructor(
-      parent: { x: any; y: any; nextPos: { x: any; y: any } },
-      l: any,
-      a: any,
-      first: any
+      parent: { x: number; y: number; nextPos: { x: number; y: number } },
+      l: number,
+      a: number,
+      first: number
     ) {
       this.first = first;
       if (first) {
@@ -104,7 +104,7 @@ const initAnimation = () => {
       this.nextPos.x = this.pos.x + this.l * Math.cos(this.ang);
       this.nextPos.y = this.pos.y + this.l * Math.sin(this.ang);
     }
-    fallback(t: { x: any; y: any }) {
+    fallback(t: { x: number; y: number }) {
       this.pos.x = t.x;
       this.pos.y = t.y;
       this.nextPos.x = this.pos.x + this.l * Math.cos(this.ang);
@@ -116,16 +116,16 @@ const initAnimation = () => {
   }
 
   class reculse {
-    x: any;
-    y: any;
-    l: any;
-    n: any;
+    x: number;
+    y: number;
+    l: number;
+    n: number;
     t: {};
     rand: number;
     segments: segment[];
     angle: number | undefined;
     dt: number | undefined;
-    constructor(x: any, y: any, l: any, n: any, a: any) {
+    constructor(x: number, y: number, l: number, n: number, a: number) {
       this.x = x;
       this.y = y;
       this.l = l;
@@ -139,7 +139,10 @@ const initAnimation = () => {
         );
       }
     }
-    move(last_target: { x: number; y: number }, target: { y: any; x: any }) {
+    move(
+      last_target: { x: number; y: number },
+      target: { y: number; x: number }
+    ) {
       this.angle = Math.atan2(target.y - this.y, target.x - this.x);
       this.dt = dist(last_target.x, last_target.y, target.x, target.y) + 5;
       this.t = {
@@ -269,8 +272,8 @@ const initAnimation = () => {
   };
 
   const handleMouseLeave = (e: MouseEvent) => {
-    mouse.x = false;
-    mouse.y = false;
+    mouse.x = 0;
+    mouse.y = 0;
   };
 
   const handleMouseDown = (e: MouseEvent) => {};
@@ -281,18 +284,18 @@ const initAnimation = () => {
     w = canvas.width = window.innerWidth;
     h = canvas.height = window.innerHeight;
     listenerDestroyer();
-    canvas.addEventListener("mousemove", handleMouseMove, false);
-    canvas.addEventListener("mouseleave", handleMouseLeave);
-    canvas.addEventListener("mousedown", handleMouseDown, false);
-    canvas.addEventListener("mouseup", handleMouseUp, false);
+    document.addEventListener("mousemove", handleMouseMove, false);
+    document.addEventListener("mouseleave", handleMouseLeave);
+    document.addEventListener("mousedown", handleMouseDown, false);
+    document.addEventListener("mouseup", handleMouseUp, false);
     window.addEventListener("resize", handleResize);
     loop();
   };
 
-  canvas.addEventListener("mousemove", handleMouseMove, false);
-  canvas.addEventListener("mouseleave", handleMouseLeave);
-  canvas.addEventListener("mousedown", handleMouseDown, false);
-  canvas.addEventListener("mouseup", handleMouseUp, false);
+  document.addEventListener("mousemove", handleMouseMove, false);
+  document.addEventListener("mouseleave", handleMouseLeave);
+  document.addEventListener("mousedown", handleMouseDown, false);
+  document.addEventListener("mouseup", handleMouseUp, false);
   window.addEventListener("resize", handleResize);
   const loop = () => {
     field?.clearRect(0, 0, w, h);
@@ -302,10 +305,10 @@ const initAnimation = () => {
 
   loop();
   const listenerDestroyer = () => {
-    canvas.removeEventListener("mousemove", handleMouseMove, false);
-    canvas.removeEventListener("mouseleave", handleMouseLeave);
-    canvas.removeEventListener("mousedown", handleMouseDown, false);
-    canvas.removeEventListener("mouseup", handleMouseUp, false);
+    document.removeEventListener("mousemove", handleMouseMove, false);
+    document.removeEventListener("mouseleave", handleMouseLeave);
+    document.removeEventListener("mousedown", handleMouseDown, false);
+    document.removeEventListener("mouseup", handleMouseUp, false);
     window.removeEventListener("resize", handleResize);
   };
   onBeforeUnmount(() => {
