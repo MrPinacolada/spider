@@ -280,6 +280,12 @@ const initAnimation = () => {
   const handleResize = () => {
     w = canvas.width = window.innerWidth;
     h = canvas.height = window.innerHeight;
+    listenerDestroyer();
+    canvas.addEventListener("mousemove", handleMouseMove, false);
+    canvas.addEventListener("mouseleave", handleMouseLeave);
+    canvas.addEventListener("mousedown", handleMouseDown, false);
+    canvas.addEventListener("mouseup", handleMouseUp, false);
+    window.addEventListener("resize", handleResize);
     loop();
   };
 
