@@ -1,5 +1,10 @@
 <template>
-  <canvas id="amazing__spider"></canvas>
+  <div
+    class="amazing__spider-wrapper"
+    :style="{ background: $props.background_color }"
+  >
+    <canvas id="amazing__spider"></canvas>
+  </div>
 </template>
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted } from "vue";
@@ -14,6 +19,26 @@ const props = defineProps({
     required: false,
     type: String,
     default: "#294CBE",
+  },
+  background_color: {
+    required: false,
+    type: String,
+    default: "#0c0c0d",
+  },
+  center_color: {
+    required: false,
+    type: String,
+    default: "#fff",
+  },
+  dots_color: {
+    required: false,
+    type: String,
+    default: "#fff",
+  },
+  dots_border_color: {
+    required: false,
+    type: String,
+    default: "#e7e8e6",
   },
 });
 
@@ -169,10 +194,10 @@ const initAnimation = () => {
         field.beginPath();
         if (dist(this.x, this.y, target.x, target.y) <= this.l) {
           field.arc(this.x, this.y, 2 * this.rand + 2, 0, 2 * Math.PI);
-          field.fillStyle = "#996A51";
+          field.fillStyle = props.dots_border_color;
         } else {
           field.arc(this.x, this.y, this.rand * 2, 0, 2 * Math.PI);
-          field.fillStyle = "#ffffff";
+          field.fillStyle = props.dots_color;
         }
         field.fill();
       }
@@ -221,7 +246,7 @@ const initAnimation = () => {
       0,
       2 * Math.PI
     );
-    field.fillStyle = "#C7A183";
+    field.fillStyle = props.center_color;
     field.fill();
 
     for (let i = 0; i < numt; i++) {
@@ -286,12 +311,24 @@ onMounted(() => {
 });
 </script>
 
-<style>
-body,
-html {
+<style scoped>
+.amazing__spider-wrapper {
   margin: 0px;
   padding: 0px;
-  position: fixed;
-  background: rgb(30, 30, 30);
+  position: absolute;
+  left: 0;
+  top: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  overflow: hidden;
+  #amazing__spider {
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+  }
 }
 </style>
